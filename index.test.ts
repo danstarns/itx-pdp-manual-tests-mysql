@@ -299,14 +299,10 @@ Unique constraint failed on the fields: (\`email\`)]
     //       ]);
 
     const result = prisma.$transaction([
-      // @ts-test-if: provider !== 'mongodb'
-      prisma.$executeRaw`INSERT INTO "User" (id, email) VALUES (${"2"}, ${"user_2@website.com"})`,
-      // @ts-test-if: provider !== 'mongodb'
-      prisma.$queryRaw`DELETE FROM "User"`,
-      // @ts-test-if: provider !== 'mongodb'
-      prisma.$executeRaw`INSERT INTO "User" (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
-      // @ts-test-if: provider !== 'mongodb'
-      prisma.$executeRaw`INSERT INTO "User" (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
+      prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"2"}, ${"user_2@website.com"})`,
+      prisma.$queryRaw`DELETE FROM User`,
+      prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
+      prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
     ]);
 
     await expect(result).rejects.toMatchInlineSnapshot(`
