@@ -173,7 +173,7 @@ describe("itx-pdp", () => {
     });
 
     await expect(result).rejects.toThrow(
-      "Unique constraint failed on the fields: (`email`)"
+      "Unique constraint failed on the constraint: `User_email_key`"
     );
 
     const users = await prisma.user.findMany();
@@ -247,7 +247,7 @@ describe("itx-pdp", () => {
     ]);
 
     await expect(result).rejects.toThrow(
-      `Unique constraint failed on the fields`
+      `Unique constraint failed on the constraint: \`User_email_key\``
     );
 
     const users = await prisma.user.findMany();
@@ -267,29 +267,6 @@ describe("itx-pdp", () => {
       },
     });
 
-    // const result =
-    //   provider === "mysql"
-    //     ? prisma.$transaction([
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"2"}, ${"user_2@website.com"})`,
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$queryRaw`DELETE FROM User`,
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
-    //       ])
-    //     : prisma.$transaction([
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$executeRaw`INSERT INTO "User" (id, email) VALUES (${"2"}, ${"user_2@website.com"})`,
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$queryRaw`DELETE FROM "User"`,
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$executeRaw`INSERT INTO "User" (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
-    //         // @ts-test-if: provider !== 'mongodb'
-    //         prisma.$executeRaw`INSERT INTO "User" (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
-    //       ]);
-
     const result = prisma.$transaction([
       prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"2"}, ${"user_2@website.com"})`,
       prisma.$queryRaw`DELETE FROM User`,
@@ -297,7 +274,7 @@ describe("itx-pdp", () => {
       prisma.$executeRaw`INSERT INTO User (id, email) VALUES (${"1"}, ${"user_1@website.com"})`,
     ]);
 
-    await expect(result).rejects.toThrow(`Raw query failed. Code: \`23505\``);
+    await expect(result).rejects.toThrow(`Raw query failed. Code: \`1062\`.`);
 
     const users = await prisma.user.findMany();
 
